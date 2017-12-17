@@ -6,11 +6,11 @@
 using namespace Rcpp;
 
 // rcppParse
-void rcppParse(std::string js);
+void rcppParse(const char* js);
 RcppExport SEXP _mapboxGeojson_rcppParse(SEXP jsSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type js(jsSEXP);
+    Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
     rcppParse(js);
     return R_NilValue;
 END_RCPP
