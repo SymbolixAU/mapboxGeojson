@@ -77,12 +77,21 @@ std::string writeGeoJSON(const T& t, bool use_convert) {
   }
 }
 
+// [[Rcpp::export]]
+void rcppParseFeature(const char* js) {
+
+  const auto &data = readGeoJSON(js);
+  const auto &feat = data.get<feature>();
+
+  Rcpp::Rcout << "data is feature: " <<  data.is<feature>() << std::endl;
+  Rcpp::Rcout << "data is feature collection: " << data.is<feature_collection>() << std::endl;
 
 
+}
 
 
 // [[Rcpp::export]]
-void rcppParse(const char* js) {
+void rcppParseGeometry(const char* js) {
 
 //  const auto &data = readGeoJSON("https://raw.githubusercontent.com/mapbox/geojson-cpp/master/test/fixtures/line-string.json", true);
 //  const auto &data = readGeoJSON("file://Users/dave/Documents/github/mapboxGeojson/data/fixtures/line-string.json", true);

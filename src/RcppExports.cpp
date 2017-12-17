@@ -5,19 +5,30 @@
 
 using namespace Rcpp;
 
-// rcppParse
-void rcppParse(const char* js);
-RcppExport SEXP _mapboxGeojson_rcppParse(SEXP jsSEXP) {
+// rcppParseFeature
+void rcppParseFeature(const char* js);
+RcppExport SEXP _mapboxGeojson_rcppParseFeature(SEXP jsSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
-    rcppParse(js);
+    rcppParseFeature(js);
+    return R_NilValue;
+END_RCPP
+}
+// rcppParseGeometry
+void rcppParseGeometry(const char* js);
+RcppExport SEXP _mapboxGeojson_rcppParseGeometry(SEXP jsSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
+    rcppParseGeometry(js);
     return R_NilValue;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_mapboxGeojson_rcppParse", (DL_FUNC) &_mapboxGeojson_rcppParse, 1},
+    {"_mapboxGeojson_rcppParseFeature", (DL_FUNC) &_mapboxGeojson_rcppParseFeature, 1},
+    {"_mapboxGeojson_rcppParseGeometry", (DL_FUNC) &_mapboxGeojson_rcppParseGeometry, 1},
     {NULL, NULL, 0}
 };
 
