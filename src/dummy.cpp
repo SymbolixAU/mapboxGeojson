@@ -86,6 +86,8 @@ void rcppParseFeature(const char* js) {
   Rcpp::Rcout << "data is feature: " <<  data.is<feature>() << std::endl;
   Rcpp::Rcout << "data is feature collection: " << data.is<feature_collection>() << std::endl;
 
+  const auto &prop = feat.properties;
+  Rcpp::Rcout << "feature size: " << prop.size() << std::endl;
 
 }
 
@@ -93,18 +95,8 @@ void rcppParseFeature(const char* js) {
 // [[Rcpp::export]]
 void rcppParseGeometry(const char* js) {
 
-//  const auto &data = readGeoJSON("https://raw.githubusercontent.com/mapbox/geojson-cpp/master/test/fixtures/line-string.json", true);
-//  const auto &data = readGeoJSON("file://Users/dave/Documents/github/mapboxGeojson/data/fixtures/line-string.json", true);
-//  geojson g = parse(js);
-
-//  const char* json = "{\"type\": \"LineString\",\"coordinates\": [[30.5, 50.5], [30.6, 50.6], [25.0, 23.3]]}";
   const auto &data = readGeoJSON(js);
-  //mapbox::geojson g;
-  //mapbox::geojson::parse(js);
-
   const auto &geom = data.get<geometry>();
-//  const auto &points = geom.get<line_string>();
-
 
   Rcpp::Rcout << "data is feature: " <<  data.is<feature>() << std::endl;
   Rcpp::Rcout << "data is feature collection: " << data.is<feature_collection>() << std::endl;
@@ -117,17 +109,17 @@ void rcppParseGeometry(const char* js) {
   Rcpp::Rcout << "geom is multi line string; " << geom.is<multi_line_string>() << std::endl;
   Rcpp::Rcout << "geom is polygon: " << geom.is<polygon>() << std::endl;
   Rcpp::Rcout << "geom is multi polygon: " << geom.is<multi_polygon>() << std::endl;
+  Rcpp::Rcout << "geom is collection: " << geom.is<geometry_collection>() << std::endl;
 
-//  Rcpp::Rcout << "points size: " << points.size() << std::endl;
+  const auto &collection = geom.get<geometry_collection>();
+  Rcpp::Rcout << "Collection size: " << collection.size() << std::endl;
 
-//  Rcpp::NumericVector lst = points;
+
+
 
   Rcpp::String geoString = stringify(geom);
-//  Rcpp::String pointString = stringify(points);
 
-//  Rcpp::Rcout << points << std::endl;
   Rcpp::Rcout << geoString.get_cstring() << std::endl;
-//  Rcpp::Rcout << pointString.get_cstring() << std::endl;
 
 }
 
