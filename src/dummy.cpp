@@ -44,24 +44,7 @@ using namespace mapbox::geojson;
 
 geojson readGeoJSON(const char* json) {
 
-//  std::ifstream t(path.c_str());
-
-//  Rcpp::Rcout << path.c_str() << std::endl;
-
-//  std::stringstream buffer;
-//  buffer << t.rdbuf();
-
-//  if (use_convert) {
-//    rapidjson_document d;
-
-//    std::string s = d["hello"].GetString();
-//    Rcpp::Rcout << s << std::endl;
-
-//    d.Parse<0>(buffer.str().c_str());
-//    return convert(d);
-//  } else {
     return parse(json);
-//  }
 }
 
 template <class T>
@@ -111,10 +94,9 @@ void rcppParseGeometry(const char* js) {
   Rcpp::Rcout << "geom is multi polygon: " << geom.is<multi_polygon>() << std::endl;
   Rcpp::Rcout << "geom is collection: " << geom.is<geometry_collection>() << std::endl;
 
-  const auto &collection = geom.get<geometry_collection>();
-  Rcpp::Rcout << "Collection size: " << collection.size() << std::endl;
-
-
+  // if there is a collection, get the size
+//  const auto &collection = geom.get<geometry_collection>();
+//  Rcpp::Rcout << "Collection size: " << collection.size() << std::endl;
 
 
   Rcpp::String geoString = stringify(geom);
@@ -123,5 +105,31 @@ void rcppParseGeometry(const char* js) {
 
 }
 
+// [[Rcpp::export]]
+Rcpp::List MultiPolygonCoordinates(const char* js) {
+  const auto &data = readGeoJSON(js);
+  const auto &geom = data.get<geometry>();
+  const auto &polygons = geom.get<multi_polygon>();
 
+  //polygons == the outer-brackets
+  //polygons[0] == the second set of brackets
+  //polygons[0][0] == the inner-most brackets
+  //
+
+
+  Rcpp::Rcout << "polygon1 size: " << polygons.size() << std::endl;
+  Rcpp::Rcout << "polygon2 size: " << polygons[0].size() << std::endl;
+  Rcpp::Rcout << "polygon3 size: " << polygons[0][0].size() << std::endl;
+
+  Rcpp::Rcout << "coords: " << polygons[0][0][0].x << std::endl;
+
+  for(int i = 1; i < polygons[0][0].size(); i ++) {
+    Rcpp::Rcout << "coordinates: " << polygons[0][0][i].x << std::endl;
+    Rcpp::Rcout << "coordinates: " << polygons[0][0][i].y << std::endl;
+  }
+
+
+  return Rcpp::List::create();
+
+}
 

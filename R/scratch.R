@@ -20,6 +20,9 @@
 # url <- "https://raw.githubusercontent.com/mapbox/geojson-cpp/master/test/fixtures/multi-polygon.json"
 # js <- paste0(readLines(url), collapse = "")
 # mapboxGeojson:::rcppParseGeometry(js)
+#
+# mapboxGeojson:::MultiPolygonCoordinates(js)
+
 
 
 ### Errors: not a geometry??
