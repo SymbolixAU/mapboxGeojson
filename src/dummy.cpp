@@ -32,15 +32,18 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
+#include "mapbox/RcppDataTypes.h"
+
+using namespace mapbox::geojson;
+
 #include <Rcpp.h>
+
 using namespace Rcpp;
 
 #include <cassert>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
-using namespace mapbox::geojson;
 
 geojson readGeoJSON(const char* json) {
 
@@ -98,6 +101,8 @@ void rcppParseGeometry(const char* js) {
 //  const auto &collection = geom.get<geometry_collection>();
 //  Rcpp::Rcout << "Collection size: " << collection.size() << std::endl;
 
+//  Rcpp::NumericMatrix mat = Rcpp::wrap(line);
+//  Rcpp::Rcout << "polygonvector: " << mapt << std::endl;
 
   Rcpp::String geoString = stringify(geom);
 
@@ -106,7 +111,25 @@ void rcppParseGeometry(const char* js) {
 }
 
 // [[Rcpp::export]]
+Rcpp::NumericMatrix rcppParseLineString(const char* js) {
+
+  const auto &data = readGeoJSON(js);
+  const auto &geom = data.get<geometry>();
+
+//  line_string line = geom.get<line_string>();
+
+//  const auto &line = geom.get<line_string>();
+  Rcpp::NumericMatrix vec;
+
+  return vec;
+
+
+}
+
+
+// [[Rcpp::export]]
 Rcpp::List MultiPolygonCoordinates(const char* js) {
+
   const auto &data = readGeoJSON(js);
   const auto &geom = data.get<geometry>();
   const auto &polygons = geom.get<multi_polygon>();
@@ -114,22 +137,26 @@ Rcpp::List MultiPolygonCoordinates(const char* js) {
   //polygons == the outer-brackets
   //polygons[0] == the second set of brackets
   //polygons[0][0] == the inner-most brackets
-  //
 
 
-  Rcpp::Rcout << "polygon1 size: " << polygons.size() << std::endl;
-  Rcpp::Rcout << "polygon2 size: " << polygons[0].size() << std::endl;
-  Rcpp::Rcout << "polygon3 size: " << polygons[0][0].size() << std::endl;
-
-  Rcpp::Rcout << "coords: " << polygons[0][0][0].x << std::endl;
-
-  for(int i = 1; i < polygons[0][0].size(); i ++) {
-    Rcpp::Rcout << "coordinates: " << polygons[0][0][i].x << std::endl;
-    Rcpp::Rcout << "coordinates: " << polygons[0][0][i].y << std::endl;
+  int n = polygons[0][0].size();
+  Rcpp::Rcout << "size: " << n << std::endl;
+  Rcpp::NumericMatrix coords(n, 2);
+  for(int i = 0; i < n; i++) {
+    coords(i,0) = polygons[0][0][i].x;
+    coords(i,1) = polygons[0][0][i].y;
   }
 
+  Rcpp::List lst(1);
+  Rcpp::List res(1);
 
-  return Rcpp::List::create();
+  lst.attr("class") = CharacterVector::create("XY", "POLYGON", "sfg");
+  res.attr("class") = CharacterVector::create("sfc_POLYGON", "sfc");
+
+  lst[0] = coords;
+  res[0] = lst;
+  //lst.attr("class") = "sfc_POLYGON";
+  return res;
 
 }
 

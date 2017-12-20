@@ -51,3 +51,14 @@
 ## (as we'll then have the size())
 ## once we have the types, we can construct the 'sf' object?
 
+# mp <- '
+# {
+#   "type" : "MultiPolygon",
+#   "coordinates" : [ [ [ [0.0, 3.0], [1.0, 1.0], [2.0, 7.0], [0.0, 0.0] ] ] ]
+# }'
+
+# mapboxGeojson:::MultiPolygonCoordinates(mp)
+# mapboxGeojson:::MultiPolygonCoordinates(js)
+
+# pol = st_sfc(st_polygon(list(cbind(c(0,3,3,0,0),c(0,0,3,3,0)))))
+# pol

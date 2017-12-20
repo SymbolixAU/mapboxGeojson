@@ -9,6 +9,10 @@ rcppParseGeometry <- function(js) {
     invisible(.Call('_mapboxGeojson_rcppParseGeometry', PACKAGE = 'mapboxGeojson', js))
 }
 
+rcppParseLineString <- function(js) {
+    .Call('_mapboxGeojson_rcppParseLineString', PACKAGE = 'mapboxGeojson', js)
+}
+
 MultiPolygonCoordinates <- function(js) {
     .Call('_mapboxGeojson_MultiPolygonCoordinates', PACKAGE = 'mapboxGeojson', js)
 }
