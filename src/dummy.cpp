@@ -32,7 +32,7 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
-#include "mapbox/RcppDataTypes.h"
+//#include "mapbox/RcppDataTypes.h"
 
 using namespace mapbox::geojson;
 
