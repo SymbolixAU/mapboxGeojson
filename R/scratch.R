@@ -62,3 +62,22 @@
 
 # pol = st_sfc(st_polygon(list(cbind(c(0,3,3,0,0),c(0,0,3,3,0)))))
 # pol
+
+# js <- '{
+#     "type": "FeatureCollection",
+# "features": [{
+# "type": "Feature",
+# "properties": null,
+# "geometry": {"type": "Point", "coordinates": [100.0, 0.0]}
+# }, {
+# "type": "Feature",
+# "properties": null,
+# "geometry": {"type": "LineString", "coordinates": [[101.0, 0.0], [102.0, 1.0]]}
+# }]
+# }'
+#
+# mapboxGeojson:::rcppParseFeature(js)
+
+# mapboxGeojson:::rcppParse("https://raw.githubusercontent.com/mapbox/geojson-cpp/master/test/fixtures/line-string.json")
+# mapboxGeojson:::rcppParse("~/Documents/github/mapboxGeojson/data/fixtures/line-string.json")
+

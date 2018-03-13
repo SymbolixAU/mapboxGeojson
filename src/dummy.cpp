@@ -151,7 +151,7 @@ Rcpp::List MultiPolygonCoordinates(const char* js) {
   Rcpp::List res(1);
 
   lst.attr("class") = CharacterVector::create("XY", "POLYGON", "sfg");
-  res.attr("class") = CharacterVector::create("sfc_POLYGON", "sfc");
+  res.attr("sfc") = CharacterVector::create("sfc_POLYGON", "sfc");
 
   lst[0] = coords;
   res[0] = lst;
