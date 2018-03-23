@@ -28,15 +28,20 @@
 #include <mapbox/geojson.hpp>
 #include <mapbox/geojson/rapidjson.hpp>
 #include <mapbox/geometry.hpp>
+#include <mapbox/geometry/point.hpp>
+#include <mapbox/geometry/line_string.hpp>
+//#include <mapbox/variant.hpp>
 
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
 //#include "mapbox/RcppDataTypes.h"
 
-using namespace mapbox::geojson;
-
+#include "rmapboxgeojson.h"
 #include <Rcpp.h>
+
+using namespace mapbox::geojson;
+//using namespace mapbox::geometry;
 
 using namespace Rcpp;
 
@@ -46,7 +51,6 @@ using namespace Rcpp;
 #include <iostream>
 
 geojson readGeoJSON(const char* json) {
-
     return parse(json);
 }
 
@@ -81,6 +85,9 @@ void rcppParseFeature(const char* js) {
 // [[Rcpp::export]]
 void rcppParseGeometry(const char* js) {
 
+  // TODO:
+  // switch on type, then, convert type to sfg
+
   const auto &data = readGeoJSON(js);
   const auto &geom = data.get<geometry>();
 
@@ -88,6 +95,8 @@ void rcppParseGeometry(const char* js) {
   Rcpp::Rcout << "data is feature collection: " << data.is<feature_collection>() << std::endl;
   Rcpp::Rcout << "data is geometry: " << data.is<geometry>() << std::endl;
 //  Rcpp::Rcout << "data is geometry collection: " << data.is<geometry_collection>() << std::endl;
+
+
 
   Rcpp::Rcout << "geom is point: " << geom.is<point>() << std::endl;
   Rcpp::Rcout << "geom is multi point: " << geom.is<multi_point>() << std::endl;
@@ -115,24 +124,52 @@ Rcpp::NumericMatrix rcppParseLineString(const char* js) {
 
   const auto &data = readGeoJSON(js);
   const auto &geom = data.get<geometry>();
-
 //  line_string line = geom.get<line_string>();
 
 //  const auto &line = geom.get<line_string>();
   Rcpp::NumericMatrix vec;
-
   return vec;
-
-
 }
 
 
 // [[Rcpp::export]]
+Rcpp::NumericVector template_point() {
+  mapbox::geometry::point<double> pt(0,0);
+  std::cout << pt.x << "," << pt.y << std::endl;
+  return Rcpp::wrap( pt );
+//  return Rcpp::wrap( pt );
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericVector template_linestring() {
+
+  mapbox::geometry::line_string<double> ls({{0, 1}, {2, 3}});
+  return Rcpp::wrap( ls );
+
+}
+
+/*
+// [[Rcpp::export]]
+mapbox::geometry::point<double> automagic_point(mapbox::geometry::point<double> pt) {
+  return pt;
+}
+*/
+
+/*
+// [[Rcpp::export]]
+void call_template_point() {
+  mapbox::geometry::point pt = template_point();
+  Rcpp::NumericVector nv = Rcpp::wrap( pt );
+  //return nv;
+}
+*/
+
+// [[Rcpp::export]]
 Rcpp::List MultiPolygonCoordinates(const char* js) {
 
-  const auto &data = readGeoJSON(js);
-  const auto &geom = data.get<geometry>();
-  const auto &polygons = geom.get<multi_polygon>();
+  const auto& data = readGeoJSON(js);
+  const auto& geom = data.get<geometry>();
+  const auto& polygons = geom.get<multi_polygon>();
 
   //polygons == the outer-brackets
   //polygons[0] == the second set of brackets

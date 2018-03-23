@@ -81,3 +81,6 @@
 # mapboxGeojson:::rcppParse("https://raw.githubusercontent.com/mapbox/geojson-cpp/master/test/fixtures/line-string.json")
 # mapboxGeojson:::rcppParse("~/Documents/github/mapboxGeojson/data/fixtures/line-string.json")
 
+
+# js <- "{\"type\": \"Point\",\"coordinates\": [30.5, 50.5]}"
+

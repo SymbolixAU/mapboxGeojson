@@ -13,6 +13,14 @@ rcppParseLineString <- function(js) {
     .Call('_mapboxGeojson_rcppParseLineString', PACKAGE = 'mapboxGeojson', js)
 }
 
+template_point <- function() {
+    .Call('_mapboxGeojson_template_point', PACKAGE = 'mapboxGeojson')
+}
+
+template_linestring <- function() {
+    .Call('_mapboxGeojson_template_linestring', PACKAGE = 'mapboxGeojson')
+}
+
 MultiPolygonCoordinates <- function(js) {
     .Call('_mapboxGeojson_MultiPolygonCoordinates', PACKAGE = 'mapboxGeojson', js)
 }

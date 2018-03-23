@@ -36,6 +36,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// template_point
+Rcpp::NumericVector template_point();
+RcppExport SEXP _mapboxGeojson_template_point() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(template_point());
+    return rcpp_result_gen;
+END_RCPP
+}
+// template_linestring
+Rcpp::NumericVector template_linestring();
+RcppExport SEXP _mapboxGeojson_template_linestring() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(template_linestring());
+    return rcpp_result_gen;
+END_RCPP
+}
 // MultiPolygonCoordinates
 Rcpp::List MultiPolygonCoordinates(const char* js);
 RcppExport SEXP _mapboxGeojson_MultiPolygonCoordinates(SEXP jsSEXP) {
@@ -52,6 +72,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_mapboxGeojson_rcppParseFeature", (DL_FUNC) &_mapboxGeojson_rcppParseFeature, 1},
     {"_mapboxGeojson_rcppParseGeometry", (DL_FUNC) &_mapboxGeojson_rcppParseGeometry, 1},
     {"_mapboxGeojson_rcppParseLineString", (DL_FUNC) &_mapboxGeojson_rcppParseLineString, 1},
+    {"_mapboxGeojson_template_point", (DL_FUNC) &_mapboxGeojson_template_point, 0},
+    {"_mapboxGeojson_template_linestring", (DL_FUNC) &_mapboxGeojson_template_linestring, 0},
     {"_mapboxGeojson_MultiPolygonCoordinates", (DL_FUNC) &_mapboxGeojson_MultiPolygonCoordinates, 1},
     {NULL, NULL, 0}
 };
