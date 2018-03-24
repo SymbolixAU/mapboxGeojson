@@ -17,8 +17,24 @@ template_point <- function() {
     .Call('_mapboxGeojson_template_point', PACKAGE = 'mapboxGeojson')
 }
 
+template_multi_point <- function() {
+    .Call('_mapboxGeojson_template_multi_point', PACKAGE = 'mapboxGeojson')
+}
+
 template_linestring <- function() {
     .Call('_mapboxGeojson_template_linestring', PACKAGE = 'mapboxGeojson')
+}
+
+template_multilinestring <- function() {
+    .Call('_mapboxGeojson_template_multilinestring', PACKAGE = 'mapboxGeojson')
+}
+
+template_polygon <- function() {
+    .Call('_mapboxGeojson_template_polygon', PACKAGE = 'mapboxGeojson')
+}
+
+template_multipolygon <- function() {
+    .Call('_mapboxGeojson_template_multipolygon', PACKAGE = 'mapboxGeojson')
 }
 
 MultiPolygonCoordinates <- function(js) {

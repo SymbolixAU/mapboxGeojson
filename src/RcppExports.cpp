@@ -46,13 +46,53 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// template_multi_point
+Rcpp::NumericMatrix template_multi_point();
+RcppExport SEXP _mapboxGeojson_template_multi_point() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(template_multi_point());
+    return rcpp_result_gen;
+END_RCPP
+}
 // template_linestring
-Rcpp::NumericVector template_linestring();
+Rcpp::NumericMatrix template_linestring();
 RcppExport SEXP _mapboxGeojson_template_linestring() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     rcpp_result_gen = Rcpp::wrap(template_linestring());
+    return rcpp_result_gen;
+END_RCPP
+}
+// template_multilinestring
+Rcpp::List template_multilinestring();
+RcppExport SEXP _mapboxGeojson_template_multilinestring() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(template_multilinestring());
+    return rcpp_result_gen;
+END_RCPP
+}
+// template_polygon
+Rcpp::List template_polygon();
+RcppExport SEXP _mapboxGeojson_template_polygon() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(template_polygon());
+    return rcpp_result_gen;
+END_RCPP
+}
+// template_multipolygon
+Rcpp::List template_multipolygon();
+RcppExport SEXP _mapboxGeojson_template_multipolygon() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(template_multipolygon());
     return rcpp_result_gen;
 END_RCPP
 }
@@ -73,7 +113,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_mapboxGeojson_rcppParseGeometry", (DL_FUNC) &_mapboxGeojson_rcppParseGeometry, 1},
     {"_mapboxGeojson_rcppParseLineString", (DL_FUNC) &_mapboxGeojson_rcppParseLineString, 1},
     {"_mapboxGeojson_template_point", (DL_FUNC) &_mapboxGeojson_template_point, 0},
+    {"_mapboxGeojson_template_multi_point", (DL_FUNC) &_mapboxGeojson_template_multi_point, 0},
     {"_mapboxGeojson_template_linestring", (DL_FUNC) &_mapboxGeojson_template_linestring, 0},
+    {"_mapboxGeojson_template_multilinestring", (DL_FUNC) &_mapboxGeojson_template_multilinestring, 0},
+    {"_mapboxGeojson_template_polygon", (DL_FUNC) &_mapboxGeojson_template_polygon, 0},
+    {"_mapboxGeojson_template_multipolygon", (DL_FUNC) &_mapboxGeojson_template_multipolygon, 0},
     {"_mapboxGeojson_MultiPolygonCoordinates", (DL_FUNC) &_mapboxGeojson_MultiPolygonCoordinates, 1},
     {NULL, NULL, 0}
 };

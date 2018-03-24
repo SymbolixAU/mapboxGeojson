@@ -29,6 +29,7 @@
 #include <mapbox/geojson/rapidjson.hpp>
 #include <mapbox/geometry.hpp>
 #include <mapbox/geometry/point.hpp>
+#include <mapbox/geometry/multi_point.hpp>
 #include <mapbox/geometry/line_string.hpp>
 //#include <mapbox/variant.hpp>
 
@@ -135,16 +136,45 @@ Rcpp::NumericMatrix rcppParseLineString(const char* js) {
 // [[Rcpp::export]]
 Rcpp::NumericVector template_point() {
   mapbox::geometry::point<double> pt(0,0);
-  std::cout << pt.x << "," << pt.y << std::endl;
+  //std::cout << pt.x << "," << pt.y << std::endl;
   return Rcpp::wrap( pt );
 //  return Rcpp::wrap( pt );
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericVector template_linestring() {
+Rcpp::NumericMatrix template_multi_point() {
+
+  mapbox::geometry::multi_point<double> mp({{0,1}, {2,3}, {3,3}, {4,4}});
+  return Rcpp::wrap( mp );
+}
+
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix template_linestring() {
 
   mapbox::geometry::line_string<double> ls({{0, 1}, {2, 3}});
   return Rcpp::wrap( ls );
+}
+
+// [[Rcpp::export]]
+Rcpp::List template_multilinestring() {
+
+  mapbox::geometry::multi_line_string<double> ml({{{0,1},{0,2}}, {{1,1},{2,2},{3,3}}});
+  return Rcpp::wrap( ml );
+}
+
+// [[Rcpp::export]]
+Rcpp::List template_polygon() {
+
+  mapbox::geometry::polygon<double> pl({{{0,1},{0,2}}, {{1,1},{2,2},{3,3}}});
+  return Rcpp::wrap( pl );
+}
+
+// [[Rcpp::export]]
+Rcpp::List template_multipolygon() {
+
+  mapbox::geometry::multi_polygon<double> mp({{{{0,1},{0,2}}, {{1,1},{2,2},{3,3}}}});
+  return Rcpp::wrap( mp );
 
 }
 
