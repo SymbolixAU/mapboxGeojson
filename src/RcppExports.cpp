@@ -5,6 +5,16 @@
 
 using namespace Rcpp;
 
+// parseSomething
+void parseSomething(const char* js);
+RcppExport SEXP _mapboxGeojson_parseSomething(SEXP jsSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
+    parseSomething(js);
+    return R_NilValue;
+END_RCPP
+}
 // rcppParseFeature
 void rcppParseFeature(const char* js);
 RcppExport SEXP _mapboxGeojson_rcppParseFeature(SEXP jsSEXP) {
@@ -109,6 +119,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_mapboxGeojson_parseSomething", (DL_FUNC) &_mapboxGeojson_parseSomething, 1},
     {"_mapboxGeojson_rcppParseFeature", (DL_FUNC) &_mapboxGeojson_rcppParseFeature, 1},
     {"_mapboxGeojson_rcppParseGeometry", (DL_FUNC) &_mapboxGeojson_rcppParseGeometry, 1},
     {"_mapboxGeojson_rcppParseLineString", (DL_FUNC) &_mapboxGeojson_rcppParseLineString, 1},

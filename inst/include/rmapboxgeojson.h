@@ -4,14 +4,12 @@
 
 #include <RcppCommon.h>
 #include <mapbox/geometry.hpp>
-//#include <mapbox/geometry/point.hpp>
 
 // http://gallery.rcpp.org/articles/custom-templated-wrap-and-as-for-seamingless-interfaces/
 // http://gallery.rcpp.org/articles/custom-as-and-wrap-example/
 
 namespace Rcpp {
 
-  //namespace traits {
     template <typename T> SEXP wrap(const mapbox::geometry::point<T>& );
     template <typename T> SEXP wrap(const mapbox::geometry::multi_point<T> &obj);
     template <typename T> SEXP wrap(const mapbox::geometry::line_string<T>& obj);
@@ -19,7 +17,7 @@ namespace Rcpp {
     template <typename T> SEXP wrap(const mapbox::geometry::linear_ring<T>& obj);
     template <typename T> SEXP wrap(const mapbox::geometry::polygon<T>& obj);
     template <typename T> SEXP wrap(const mapbox::geometry::multi_polygon<T>& obj);
-  //}
+
 }
 
 #include <Rcpp.h>
@@ -41,7 +39,7 @@ namespace Rcpp {
     template <typename T>
     SEXP wrap(const mapbox::geometry::multi_point<T> &obj) {
 
-      std::vector< mapbox::geometry::point<double> > vec(obj.begin(), obj.end());
+      std::vector< mapbox::geometry::point<T> > vec(obj.begin(), obj.end());
 
       size_t n = obj.size();
       Rcpp::NumericMatrix np(n, 2);
@@ -51,14 +49,13 @@ namespace Rcpp {
         nm(i, 0) = vec[i].x;
         nm(i, 1) = vec[i].y;
       }
-
       return nm;
     }
 
     template <typename T>
     SEXP wrap(const mapbox::geometry::line_string<T> &obj) {
 
-      std::vector< mapbox::geometry::point<double> > vec(obj.begin(), obj.end());
+      std::vector< mapbox::geometry::point<T> > vec(obj.begin(), obj.end());
 
       size_t n = obj.size();
 
@@ -67,7 +64,6 @@ namespace Rcpp {
         nm(i, 0) = vec[i].x;
         nm(i, 1) = vec[i].y;
       }
-
       return nm;
     }
 
@@ -77,7 +73,7 @@ namespace Rcpp {
       size_t n = obj.size();
       Rcpp::List lst(n);
       for (int i = 0; i < n; i++) {
-        mapbox::geometry::line_string<double> ls(obj[i]);
+        mapbox::geometry::line_string<T> ls(obj[i]);
         lst[i] = Rcpp::wrap(ls);
       }
       return lst;
@@ -87,14 +83,13 @@ namespace Rcpp {
     SEXP wrap(const mapbox::geometry::linear_ring<T> &obj) {
 
       size_t n = obj.size();
-      std::vector< mapbox::geometry::point<double> > vec(obj.begin(), obj.end());
+      std::vector< mapbox::geometry::point<T> > vec(obj.begin(), obj.end());
 
       Rcpp::NumericMatrix nm(n,  2);
       for (int i = 0; i < n; i++ ) {
         nm(i, 0) = vec[i].x;
         nm(i, 1) = vec[i].y;
       }
-
       return nm;
     }
 
@@ -104,7 +99,7 @@ namespace Rcpp {
       size_t n = obj.size();
       Rcpp::List lst(n);
       for (int i = 0; i < n; i++) {
-        mapbox::geometry::linear_ring<double> ls(obj[i]);
+        mapbox::geometry::linear_ring<T> ls(obj[i]);
         lst[i] = Rcpp::wrap(ls);
       }
       return lst;
@@ -114,22 +109,14 @@ namespace Rcpp {
     SEXP wrap(const mapbox::geometry::multi_polygon<T> &obj) {
 
       size_t n = obj.size();
-      Rcpp::List lst(1);
+      Rcpp::List lst(n);
 
       for (int i = 0; i < n; i++) {
-        mapbox::geometry::polygon<double> pl(obj[i]);
-
-        size_t m = pl.size();
-        Rcpp::List polys(m);
-        for (int j = 0; j < m; j++) {
-          polys[i] = Rcpp::wrap(pl);
-        }
-        lst[0] = polys;
+        mapbox::geometry::polygon<T> pl(obj[i]);
+        lst[i] = Rcpp::wrap(pl);
       }
       return lst;
-
     }
-
 }
 
 
