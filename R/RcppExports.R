@@ -2,7 +2,7 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 parseSomething <- function(js) {
-    invisible(.Call('_mapboxGeojson_parseSomething', PACKAGE = 'mapboxGeojson', js))
+    .Call('_mapboxGeojson_parseSomething', PACKAGE = 'mapboxGeojson', js)
 }
 
 rcppParseFeature <- function(js) {

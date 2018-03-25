@@ -52,29 +52,20 @@ using namespace rapidjson;
 #include <sstream>
 #include <iostream>
 
+// TODO:
+// - error checking - invalid GeoJSON
+
 geojson readGeoJSON(const char* json) {
   return parse(json);
 }
 
-geojson readGeoJSONAgain(const std::string &path, bool use_convert) {
-  std::ifstream t(path.c_str());
-  std::stringstream buffer;
-  buffer << t.rdbuf();
-  if (use_convert) {
-    rapidjson_document d;
-    d.Parse<0>(buffer.str().c_str());
-    return convert(d);
-  } else {
-    return parse(buffer.str());
-  }
-}
-
 // use rapidJSON to parse a JSON document
 // [[Rcpp::export]]
-void parseSomething(const char* js) {
+Rcpp::List parseSomething(const char* js) {
 
   rapidjson::Document d;
   d.Parse(js);
+  Rcpp::List lst(d.Size());
 
   /*
   StringBuffer buffer;
@@ -91,49 +82,33 @@ void parseSomething(const char* js) {
   //  }
   //}
 
+  for (rapidjson::SizeType i = 0; i < d.Size(); i++) {
+    const Value& v = d[i];
+    //std::cout << v["type"].GetString() << std::endl;
+    //std::cout << "debug: isObject " << v.IsObject() << std::endl;
 
+    StringBuffer sb;
+    Writer<StringBuffer> writer(sb);
+    v.Accept(writer);
+    std::string s = sb.GetString();
+    std::cout << s << std::endl;
 
-  for (auto& m : d.GetObject() ) {
-    // will iterate each object '{},{},{}'
+    const char* myjs = sb.GetString();
+    const auto &data = readGeoJSON(myjs);
+    const auto &geom = data.get<geometry>();
 
-    //std::string mystr = m.name.GetString();
-    //const char* mychar = m.name.GetString();
-    //std::cout << mystr << std::endl;
-    //std::cout << mystr.c_str() << std::endl;
-    //auto data = readGeoJSON(mychar);
+    // switch on 'type'
 
-//    std::string st = mapbox::geojson::stringify(d);
+    //const auto& polygons = geom.get<multi_polygon>();
 
-    //rapidjson::StringBuffer sb;
-    //rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
-    //m.Accept(writer);
-    //std::string s = sb.GetString();
-    //if( m["geometry"].isObject() ) {
-    /*
-      rapidjson::StringBuffer sb;
-      rapidjson::Writer<rapidjson::StringBuffer> writer( sb );
-      m[ "geometry" ].Accept( writer );
-      std::cout << sb.GetString() << std::endl;
-    */
-    //}
+    mapbox::geometry::multi_polygon<double> poly = geom.get<multi_polygon>();
 
-    //Rcpp::Rcout << "debug: iterating d" << std::endl;
+    //mapbox::geometry::multi_polygon<double> mp(geom.get<multi_polygon>);
+    lst[i] = Rcpp::wrap(poly);
 
-    //std::string s = m.GetString();
-    //std::cout << s << std::endl;
   }
+  return lst;
 
-
-
-
-//  std::cout << d.Size() << std::endl;
-//  for (auto& m : d.GetObject()) {
-//    //const char* myChar = m;
-//    //const auto &data = readGeoJSON(myChar);
-//
-////    const auto &data = readGeoJSON(m);
-//  }
-  //const auto &data = readGeoJSON(js);
 }
 
 
@@ -167,6 +142,7 @@ void rcppParseFeature(const char* js) {
 }
 
 
+
 // [[Rcpp::export]]
 void rcppParseGeometry(const char* js) {
 
@@ -180,8 +156,6 @@ void rcppParseGeometry(const char* js) {
   Rcpp::Rcout << "data is feature collection: " << data.is<feature_collection>() << std::endl;
   Rcpp::Rcout << "data is geometry: " << data.is<geometry>() << std::endl;
 //  Rcpp::Rcout << "data is geometry collection: " << data.is<geometry_collection>() << std::endl;
-
-
 
   Rcpp::Rcout << "geom is point: " << geom.is<point>() << std::endl;
   Rcpp::Rcout << "geom is multi point: " << geom.is<multi_point>() << std::endl;
@@ -232,28 +206,24 @@ Rcpp::NumericMatrix template_multi_point() {
 
 // [[Rcpp::export]]
 Rcpp::NumericMatrix template_linestring() {
-
   mapbox::geometry::line_string<double> ls({{0, 1}, {2, 3}});
   return Rcpp::wrap( ls );
 }
 
 // [[Rcpp::export]]
 Rcpp::List template_multilinestring() {
-
   mapbox::geometry::multi_line_string<double> ml({{{0,1},{0,2}}, {{1,1},{2,2},{3,3}}});
   return Rcpp::wrap( ml );
 }
 
 // [[Rcpp::export]]
 Rcpp::List template_polygon() {
-
   mapbox::geometry::polygon<double> pl({{{0,1},{0,2}}, {{1,1},{2,2},{3,3}}});
   return Rcpp::wrap( pl );
 }
 
 // [[Rcpp::export]]
 Rcpp::List template_multipolygon() {
-
   mapbox::geometry::multi_polygon<double> mp({
     {
       {

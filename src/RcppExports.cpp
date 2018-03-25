@@ -6,13 +6,14 @@
 using namespace Rcpp;
 
 // parseSomething
-void parseSomething(const char* js);
+Rcpp::List parseSomething(const char* js);
 RcppExport SEXP _mapboxGeojson_parseSomething(SEXP jsSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
-    parseSomething(js);
-    return R_NilValue;
+    rcpp_result_gen = Rcpp::wrap(parseSomething(js));
+    return rcpp_result_gen;
 END_RCPP
 }
 // rcppParseFeature
