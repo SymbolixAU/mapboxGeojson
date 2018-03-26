@@ -22,19 +22,17 @@ namespace Rcpp {
 
 #include <Rcpp.h>
 
-
 namespace Rcpp {
 
     template <typename T>
     SEXP wrap(const mapbox::geometry::point<T> &obj) {
 
-      Rcpp::NumericMatrix nm(1, 2);
-      nm(0,0) = obj.x;
-      nm(0,1) = obj.y;
+      Rcpp::NumericVector nv(2);
+      nv[0] = obj.x;
+      nv[1] = obj.y;
 
-      return nm;
+      return nv;
     };
-
 
     template <typename T>
     SEXP wrap(const mapbox::geometry::multi_point<T> &obj) {
@@ -47,6 +45,7 @@ namespace Rcpp {
         nm(i, 0) = vec[i].x;
         nm(i, 1) = vec[i].y;
       }
+      nm.attr("class") = Rcpp::CharacterVector::create("XY", "MULTIPOINT", "sfg");
       return nm;
     }
 
@@ -61,6 +60,7 @@ namespace Rcpp {
         nm(i, 0) = vec[i].x;
         nm(i, 1) = vec[i].y;
       }
+      nm.attr("class") = Rcpp::CharacterVector::create("XY", "LINESTRING", "sfg");
       return nm;
     }
 
@@ -74,6 +74,7 @@ namespace Rcpp {
         mapbox::geometry::line_string<T> ls(obj[i]);
         lst[i] = Rcpp::wrap(ls);
       }
+      lst.attr("class") = Rcpp::CharacterVector::create("XY", "MULTILINESTRING", "sfg");
       return lst;
     }
 
@@ -101,6 +102,7 @@ namespace Rcpp {
         mapbox::geometry::linear_ring<T> ls(obj[i]);
         lst[i] = Rcpp::wrap(ls);
       }
+      lst.attr("class") = Rcpp::CharacterVector::create("XY", "POLYGON", "sfg");
       return lst;
     }
 
@@ -114,6 +116,7 @@ namespace Rcpp {
         mapbox::geometry::polygon<T> pl(obj[i]);
         lst[i] = Rcpp::wrap(pl);
       }
+      lst.attr("class") = Rcpp::CharacterVector::create("XY", "MULTIPOLYGON", "sfg");
       return lst;
     }
 }

@@ -50,6 +50,7 @@
 //#include "mapbox/RcppDataTypes.h"
 
 #include "rmapboxgeojson.h"
+//#include "sfg.h"
 #include <Rcpp.h>
 
 using namespace mapbox::geojson;
@@ -71,37 +72,113 @@ geojson readGeoJSON(const char* json) {
 }
 
 
+Rcpp::CharacterVector sfg_attributes(std::string geom_type) {
+  return Rcpp::CharacterVector::create("XY", geom_type, "sfg");
+}
+
+template <typename T>
+Rcpp::NumericVector get_point(const mapbox::geometry::point<T>& pt) {
+  Rcpp::NumericVector nv = Rcpp::wrap(pt);
+  nv.attr("class") = sfg_attributes("POINT");
+  return nv;
+}
+
+template <typename T>
+Rcpp::NumericMatrix get_multi_point(const mapbox::geometry::multi_point<T>& mpt) {
+  Rcpp::NumericMatrix nm = Rcpp::wrap(mpt);
+  nm.attr("class") = sfg_attributes("MULTIPOINT");
+  return nm;
+}
+
+template <typename T>
+Rcpp::NumericMatrix get_line_string(const mapbox::geometry::line_string<T>& ls) {
+  Rcpp::NumericMatrix nm = Rcpp::wrap(ls);
+  nm.attr("class") = sfg_attributes("LINESTRING");
+  return nm;
+}
+
+template <typename T>
+Rcpp::List get_multi_line_string(const mapbox::geometry::multi_line_string<T>& mls) {
+  Rcpp::List lst = Rcpp::wrap(mls);
+  lst.attr("class") = sfg_attributes("MULTILINESTRING");
+  return lst;
+}
+
+
+template <typename T>
+Rcpp::List get_polygon(const mapbox::geometry::polygon<T> &pl) {
+  Rcpp::List lst = Rcpp::wrap(pl);
+  lst.attr("class") = sfg_attributes("POLYGON");
+  return lst;
+}
+
+template <typename T>
+Rcpp::List get_multi_polygon(const mapbox::geometry::multi_polygon<T> &pl) {
+  Rcpp::List lst = Rcpp::wrap(pl);
+  lst.attr("class") = sfg_attributes("MULTIPOLYGON");
+  return lst;
+}
+
 /*
  * GeoJSON to SFG
  *
+ * @param sfc Rcpp::List storing the objects
+ * @param i index of sfc object
  * @param js returns an `sfg` object from the GeoJSON geometry
  */
-void geojson_to_sfg(geojson geo) {
+void geojson_to_sfg(Rcpp::List& sfc, int i, geojson geo, std::string& g_type) {
 
-  // switch on the geom.type
-  std::cout << "debug: geojson which: " << geo.which() << std::endl;
-  // geometry: 0
-  // GeometryCollection: 0
-  // Feature: 1
-  // FeatureCollection: 2
+  const auto &geom = geo.get<geometry>();
+  //std::cout << "debug: geojson which: " << geom.which() << std::endl;
 
-  // if geometry, which type of geometry is it?
-  if (geo.which() == 0) {
-    // geometry / geometryCollection
-    const auto &geom = geo.get<geometry>();
-    std::cout << "debug: geom which: " << geom.which() << std::endl;
-    std::cout << "debug: is geometry_collection: " << geom.is<geometry_collection>() << std::endl;
-    // point: 0
-    // multipoint: 1
-    // linestring: 2
-    // multilinestring: 3
-    // polygon: 4
-    // multipolygon: 5
-    // geometrycollection: 6
+  if (g_type == "Point") {
+    sfc[i] = get_point(geom.get<point>());
+
+  } else if (g_type == "MultiPoint") {
+    sfc[i] = get_multi_point(geom.get<multi_point>());
+
+  } else if (g_type == "LineString") {
+    sfc[i] = get_line_string(geom.get<line_string>());
+
+  } else if (g_type == "MultiLinestring") {
+    sfc[i] = get_multi_line_string(geom.get<multi_line_string>());
+
+  } else if (g_type == "Polygon") {
+    sfc[i] = get_polygon(geom.get<polygon>());
+
+  } else if (g_type == "MultiPolygon") {
+    sfc[i] = get_multi_polygon(geom.get<multi_polygon>());
+
+  //} else if (g_type == "GeometryCollection") {
+
+  } else {
+    Rcpp::stop("unknown sfg type");
   }
 
 }
 
+
+/*
+ * Parse Geometry Object
+ *
+ * Parses each JSON object ('{}')
+ *
+ */
+void parse_geometry_object(Rcpp::List& sfc, int i, const Value &val) {
+
+  std::string geom_type = val["type"].GetString();
+
+  StringBuffer sb;
+  Writer<StringBuffer> writer(sb);
+  val.Accept(writer);
+  std::string s = sb.GetString();
+
+  const char* myjs = sb.GetString();
+  const auto& data = readGeoJSON(myjs);
+
+  geojson_to_sfg(sfc, i, data, geom_type);
+
+}
 
 // use rapidJSON to parse a JSON document
 // [[Rcpp::export]]
@@ -109,52 +186,47 @@ Rcpp::List parseSomething(const char* js) {
 
   rapidjson::Document d;
   d.Parse(js);
-  Rcpp::List lst(d.Size());
-
-  //mapbox::geojson::rapidjson_document rd = d;
+  Rcpp::List sfc(d.Size());
+  std::string geom_type;
 
   // if the GeoJSON is an array of objects, need to loop array
   // otherwise, just parse what's there
-  for (rapidjson::SizeType i = 0; i < d.Size(); i++) {
+  for (int i = 0; i < d.Size(); i++) {
+
     const Value& v = d[i];
-    //Rcpp::Rcout << "debug: in loop" << std::endl;
-    //std::cout << v["type"].GetString() << std::endl;
-    //std::cout << "debug: isObject " << v.IsObject() << std::endl;
 
-    StringBuffer sb;
-    Writer<StringBuffer> writer(sb);
-    v.Accept(writer);
-    std::string s = sb.GetString();
-    std::cout << s << std::endl;
+    // std::cout << "debug: type: " <<  v["type"].GetString() << std::endl;
+    geom_type = v["type"].GetString();
+    Rcpp::Rcout << "debug: type: " << geom_type << std::endl;
 
-    const char* myjs = sb.GetString();
-    const auto &data = readGeoJSON(myjs);
+    if (geom_type == "Feature") {
 
-    geojson_to_sfg(data);
+    } else if (geom_type == "FeatureCollection") {
 
-    //const auto &feat = data.get<feature>();
+    } else if (geom_type == "GeometryCollection") {
+      // a collection of geometries...
+      // need to iterate through them, and store each result in the same list elemetn,
+      // as another list...
 
-    //Rcpp::Rcout << "debug feature: " << feat.geometry.is<multi_polygon>() << std::endl;
+      // iterate over each 'geometries'
+      const Value& gc = v["geometries"];
+      Rcpp::Rcout << "debug: geometry collection size2: " << gc.Size() << std::endl;
 
-    //const auto &geom = feat.geometry.get<multi_polygon>();
 
-    //lst[i] = Rcpp::wrap(geom);
+      for (int j = 0; j < gc.Size(); j++) {
+        const Value& gcval = gc[j];
+        geom_type = gcval["type"].GetString();
+        std::cout << geom_type << std::endl;
 
-//    const auto &geom = data.get<geometry>();
 
-    //Rcpp::Rcout << "geom is multi polygon: " << geom.is<multi_polygon>() << std::endl;
+      }
 
-    // switch on 'type'
-
-    //const auto& polygons = geom.get<multi_polygon>();
-
-    //mapbox::geometry::multi_polygon<double> poly = geom.get<multi_polygon>();
-
-    //mapbox::geometry::multi_polygon<double> mp(geom.get<multi_polygon>);
-    //lst[i] = Rcpp::wrap(geom);
+    } else {  // geometry?
+      parse_geometry_object(sfc, i, v);
+    }
 
   }
-  return lst;
+  return sfc;
 
 }
 
