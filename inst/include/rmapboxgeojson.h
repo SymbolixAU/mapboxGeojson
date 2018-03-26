@@ -40,11 +40,9 @@ namespace Rcpp {
     SEXP wrap(const mapbox::geometry::multi_point<T> &obj) {
 
       std::vector< mapbox::geometry::point<T> > vec(obj.begin(), obj.end());
-
       size_t n = obj.size();
-      Rcpp::NumericMatrix np(n, 2);
-
       Rcpp::NumericMatrix nm(n,  2);
+
       for (int i = 0; i < n; i++ ) {
         nm(i, 0) = vec[i].x;
         nm(i, 1) = vec[i].y;
@@ -56,10 +54,9 @@ namespace Rcpp {
     SEXP wrap(const mapbox::geometry::line_string<T> &obj) {
 
       std::vector< mapbox::geometry::point<T> > vec(obj.begin(), obj.end());
-
       size_t n = obj.size();
-
       Rcpp::NumericMatrix nm(n,  2);
+
       for (int i = 0; i < n; i++ ) {
         nm(i, 0) = vec[i].x;
         nm(i, 1) = vec[i].y;
@@ -72,6 +69,7 @@ namespace Rcpp {
 
       size_t n = obj.size();
       Rcpp::List lst(n);
+
       for (int i = 0; i < n; i++) {
         mapbox::geometry::line_string<T> ls(obj[i]);
         lst[i] = Rcpp::wrap(ls);
@@ -98,6 +96,7 @@ namespace Rcpp {
 
       size_t n = obj.size();
       Rcpp::List lst(n);
+
       for (int i = 0; i < n; i++) {
         mapbox::geometry::linear_ring<T> ls(obj[i]);
         lst[i] = Rcpp::wrap(ls);

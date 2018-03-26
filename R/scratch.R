@@ -118,12 +118,70 @@
 #       ]
 #     ]
 #   }
+# },
+# {
+# "type": "Polygon",
+#     "coordinates": [
+#       [
+#         [-10.0, -10.0],
+#         [10.0, -10.0],
+#         [10.0, 10.0],
+#         [-10.0, -10.0]
+#       ]
+#     ]
+# },
+# {
+#   "type": "FeatureCollection",
+#   "features": [
+#     {
+#       "type": "Feature",
+#       "properties": null,
+#       "geometry": {
+#         "type": "Point",
+#         "coordinates": [100.0, 0.0]
+#       }
+#     },
+#     {
+#       "type": "Feature",
+#       "properties": null,
+#       "geometry": {
+#         "type": "LineString",
+#         "coordinates": [
+#           [101.0, 0.0],
+#           [102.0, 1.0]
+#         ]
+#       }
+#     }
+#   ]
+# },
+# {
+#   "type": "GeometryCollection",
+#   "geometries": [
+#     {
+#       "type": "Point",
+#       "coordinates": [100.0, 0.0]
+#     },
+#     {
+#       "type": "LineString",
+#       "coordinates": [
+#         [101.0, 0.0],
+#         [102.0, 1.0]
+#       ]
+#     },
+#     {
+#       "type" : "MultiPoint",
+#       "coordinates" : [
+#         [0,0],
+#         [1,1],
+#         [2,2]
+#       ]
+#     }
+#   ]
 # }
 # ]'
 # mapboxGeojson:::parseSomething(js)
 #
-# js <- '[
-# {
+# js <- '[{
 #   "type": "Feature",
 #   "geometry": {
 #     "type": "MultiPolygon",

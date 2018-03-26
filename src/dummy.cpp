@@ -20,6 +20,17 @@
  *
  */
 
+// sf
+// - a geometry is an 'sfg'
+// - a feature is an 'sfc'
+// - a collection of 'sfg's is an 'sfc' (with extra attributes)
+// - an 'sfc' with properties is an 'sf'
+
+// - how does it compare to what
+// https://github.com/r-spatial/sf/issues/185
+// does?
+// - can ^^ handle an array of geojson?
+
 
 // [[Rcpp::depends(mapboxGeometry)]]
 // [[Rcpp::depends(mapboxVariant)]]
@@ -59,6 +70,39 @@ geojson readGeoJSON(const char* json) {
   return parse(json);
 }
 
+
+/*
+ * GeoJSON to SFG
+ *
+ * @param js returns an `sfg` object from the GeoJSON geometry
+ */
+void geojson_to_sfg(geojson geo) {
+
+  // switch on the geom.type
+  std::cout << "debug: geojson which: " << geo.which() << std::endl;
+  // geometry: 0
+  // GeometryCollection: 0
+  // Feature: 1
+  // FeatureCollection: 2
+
+  // if geometry, which type of geometry is it?
+  if (geo.which() == 0) {
+    // geometry / geometryCollection
+    const auto &geom = geo.get<geometry>();
+    std::cout << "debug: geom which: " << geom.which() << std::endl;
+    std::cout << "debug: is geometry_collection: " << geom.is<geometry_collection>() << std::endl;
+    // point: 0
+    // multipoint: 1
+    // linestring: 2
+    // multilinestring: 3
+    // polygon: 4
+    // multipolygon: 5
+    // geometrycollection: 6
+  }
+
+}
+
+
 // use rapidJSON to parse a JSON document
 // [[Rcpp::export]]
 Rcpp::List parseSomething(const char* js) {
@@ -67,23 +111,13 @@ Rcpp::List parseSomething(const char* js) {
   d.Parse(js);
   Rcpp::List lst(d.Size());
 
-  /*
-  StringBuffer buffer;
-  Writer<StringBuffer> writer(buffer);
-  d.Accept(writer);
-  std::cout << buffer.GetString() << std::endl;
-  */
+  //mapbox::geojson::rapidjson_document rd = d;
 
-  //for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) { // Ok
-  //  if (itr->HasMember("geometry")) { // Ok
-  //    auto somestring = (*itr)["geometry"].GetString(); // bingo
-  //    std::cout << somestring << std::endl;
-  //    auto data = readGeoJSON(somestring);
-  //  }
-  //}
-
+  // if the GeoJSON is an array of objects, need to loop array
+  // otherwise, just parse what's there
   for (rapidjson::SizeType i = 0; i < d.Size(); i++) {
     const Value& v = d[i];
+    //Rcpp::Rcout << "debug: in loop" << std::endl;
     //std::cout << v["type"].GetString() << std::endl;
     //std::cout << "debug: isObject " << v.IsObject() << std::endl;
 
@@ -95,16 +129,29 @@ Rcpp::List parseSomething(const char* js) {
 
     const char* myjs = sb.GetString();
     const auto &data = readGeoJSON(myjs);
-    const auto &geom = data.get<geometry>();
+
+    geojson_to_sfg(data);
+
+    //const auto &feat = data.get<feature>();
+
+    //Rcpp::Rcout << "debug feature: " << feat.geometry.is<multi_polygon>() << std::endl;
+
+    //const auto &geom = feat.geometry.get<multi_polygon>();
+
+    //lst[i] = Rcpp::wrap(geom);
+
+//    const auto &geom = data.get<geometry>();
+
+    //Rcpp::Rcout << "geom is multi polygon: " << geom.is<multi_polygon>() << std::endl;
 
     // switch on 'type'
 
     //const auto& polygons = geom.get<multi_polygon>();
 
-    mapbox::geometry::multi_polygon<double> poly = geom.get<multi_polygon>();
+    //mapbox::geometry::multi_polygon<double> poly = geom.get<multi_polygon>();
 
     //mapbox::geometry::multi_polygon<double> mp(geom.get<multi_polygon>);
-    lst[i] = Rcpp::wrap(poly);
+    //lst[i] = Rcpp::wrap(geom);
 
   }
   return lst;
@@ -165,9 +212,6 @@ void rcppParseGeometry(const char* js) {
   Rcpp::Rcout << "geom is multi polygon: " << geom.is<multi_polygon>() << std::endl;
   Rcpp::Rcout << "geom is collection: " << geom.is<geometry_collection>() << std::endl;
 
-  // if there is a collection, get the size
-//  const auto &collection = geom.get<geometry_collection>();
-//  Rcpp::Rcout << "Collection size: " << collection.size() << std::endl;
 
 //  Rcpp::NumericMatrix mat = Rcpp::wrap(line);
 //  Rcpp::Rcout << "polygonvector: " << mapt << std::endl;
