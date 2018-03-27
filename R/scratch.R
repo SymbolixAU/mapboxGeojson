@@ -211,3 +211,32 @@
 #          "{\"geodesic\":true,\"type\":\"Point\",\"coordinates\":[-118.68089232041565,36.44173155205561]}")
 #
 # mapboxGeojson:::rcpp_geojson_to_sf(js)
+
+# library(geojsonio)
+# library(microbenchmark)
+#
+# file <- system.file("examples", "california.geojson", package = "geojsonio")
+#
+# microbenchmark(
+#   geojsonio = {
+#     ## doesn't output as SF
+#     out <- geojson_read(file)
+#   },
+#   mapbox = {
+#     geo <- paste0(readLines(file), collapse = "")
+#     mapboxGeojson:::rcpp_geojson_to_sf(geo)
+#   },
+#   sf = {
+#     ## can sf handle a vector of geoJSON?
+#     ## or non-Collections? (i.e., array of objects?), or character vector?
+#     sf::st_read(file, quiet = T)
+#   },
+#   times = 2
+# )
+
+# Unit: milliseconds
+#      expr         min          lq       mean     median         uq        max neval
+# geojsonio 1050.364307 1050.364307 1061.61524 1061.61524 1072.86617 1072.86617     2
+#    mapbox   16.654561   16.654561   17.12597   17.12597   17.59737   17.59737     2
+#        sf    9.815147    9.815147   10.46490   10.46490   11.11466   11.11466     2
+
