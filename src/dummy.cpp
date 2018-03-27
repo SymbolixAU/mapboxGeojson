@@ -71,7 +71,6 @@ geojson readGeoJSON(const char* json) {
   return parse(json);
 }
 
-
 Rcpp::CharacterVector sfg_attributes(std::string geom_type) {
   return Rcpp::CharacterVector::create("XY", geom_type, "sfg");
 }
@@ -104,7 +103,6 @@ Rcpp::List get_multi_line_string(const mapbox::geometry::multi_line_string<T>& m
   return lst;
 }
 
-
 template <typename T>
 Rcpp::List get_polygon(const mapbox::geometry::polygon<T> &pl) {
   Rcpp::List lst = Rcpp::wrap(pl);
@@ -126,7 +124,7 @@ Rcpp::List get_multi_polygon(const mapbox::geometry::multi_polygon<T> &pl) {
  * @param i index of sfc object
  * @param js returns an `sfg` object from the GeoJSON geometry
  */
-void geojson_to_sfg(Rcpp::List& sfc, int i, geojson geo, std::string& g_type) {
+void get_geometry_object(Rcpp::List& sfc, int i, geojson geo, std::string& g_type) {
 
   const auto &geom = geo.get<geometry>();
   //std::cout << "debug: geojson which: " << geom.which() << std::endl;
@@ -157,6 +155,10 @@ void geojson_to_sfg(Rcpp::List& sfc, int i, geojson geo, std::string& g_type) {
 
 }
 
+rapidjson::Value get_feature_geometry(const Value& feature) {
+  rapidjson::Value obj = feature["geometry"];
+  return obj;
+}
 
 /*
  * Parse Geometry Object
@@ -176,9 +178,25 @@ void parse_geometry_object(Rcpp::List& sfc, int i, const Value &val) {
   const char* myjs = sb.GetString();
   const auto& data = readGeoJSON(myjs);
 
-  geojson_to_sfg(sfc, i, data, geom_type);
-
+  get_geometry_object(sfc, i, data, geom_type);
 }
+
+Rcpp::List parse_geometry_collection_object(const Value &val) {
+
+  Rcpp::List geom_collection(val.Size());
+  std::string geom_type;
+
+  for (int i = 0; i < val.Size(); i++) {
+    const Value& gcval = val[i];
+    geom_type = gcval["type"].GetString();
+    //std::cout << geom_type << std::endl;
+    parse_geometry_object(geom_collection, i, gcval);
+  }
+  geom_collection.attr("class") = sfg_attributes("GEOMETRYCOLLECTION");
+
+  return geom_collection;
+}
+
 
 // use rapidJSON to parse a JSON document
 // [[Rcpp::export]]
@@ -189,43 +207,56 @@ Rcpp::List parseSomething(const char* js) {
   Rcpp::List sfc(d.Size());
   std::string geom_type;
 
+  //geom_type = d["type"].GetString();
+
+  Rcpp::Rcout << "debug: size: " << d.Size() << std::endl;
+
+  // TODO: if not an array, the size will be 0 and is just an object
   // if the GeoJSON is an array of objects, need to loop array
   // otherwise, just parse what's there
   for (int i = 0; i < d.Size(); i++) {
 
     const Value& v = d[i];
 
+    //bool b = v.HasMember("type");
+    if( v.HasMember("type") == FALSE )  Rcpp::stop("No 'type' member");
+
     // std::cout << "debug: type: " <<  v["type"].GetString() << std::endl;
     geom_type = v["type"].GetString();
-    Rcpp::Rcout << "debug: type: " << geom_type << std::endl;
+    //Rcpp::Rcout << "debug: type: " << geom_type << std::endl;
 
     if (geom_type == "Feature") {
 
+      // get the geometry from the feature
+      const Value& geom = v["geometry"];
+
+      // TODO: implement check geometry exists
+      //bool b = geom.HasMember("geometry");
+      parse_geometry_object(sfc, i, geom);
+
+      // TODO:
+      // get properties & save as 'sf' object
+
     } else if (geom_type == "FeatureCollection") {
 
+      Rcpp::Rcout << "debug: FeatureCollection not implemented" << std::endl;
+
+      // If FeatureCollection, need to create an sfc object
+      // of all the features
+
+      // iterate through feature[] array
+
     } else if (geom_type == "GeometryCollection") {
-      // a collection of geometries...
-      // need to iterate through them, and store each result in the same list elemetn,
-      // as another list...
 
-      // iterate over each 'geometries'
       const Value& gc = v["geometries"];
-      Rcpp::Rcout << "debug: geometry collection size2: " << gc.Size() << std::endl;
+      sfc[i] = parse_geometry_collection_object(gc);
 
-
-      for (int j = 0; j < gc.Size(); j++) {
-        const Value& gcval = gc[j];
-        geom_type = gcval["type"].GetString();
-        std::cout << geom_type << std::endl;
-
-
-      }
-
-    } else {  // geometry?
+    } else {  // geometry
       parse_geometry_object(sfc, i, v);
     }
 
   }
+
   return sfc;
 
 }
