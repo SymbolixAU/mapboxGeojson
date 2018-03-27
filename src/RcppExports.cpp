@@ -5,14 +5,14 @@
 
 using namespace Rcpp;
 
-// parseSomething
-Rcpp::List parseSomething(const char* js);
-RcppExport SEXP _mapboxGeojson_parseSomething(SEXP jsSEXP) {
+// rcpp_geojson_to_sf
+Rcpp::List rcpp_geojson_to_sf(Rcpp::StringVector geojson);
+RcppExport SEXP _mapboxGeojson_rcpp_geojson_to_sf(SEXP geojsonSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
-    rcpp_result_gen = Rcpp::wrap(parseSomething(js));
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type geojson(geojsonSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_geojson_to_sf(geojson));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -120,7 +120,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_mapboxGeojson_parseSomething", (DL_FUNC) &_mapboxGeojson_parseSomething, 1},
+    {"_mapboxGeojson_rcpp_geojson_to_sf", (DL_FUNC) &_mapboxGeojson_rcpp_geojson_to_sf, 1},
     {"_mapboxGeojson_rcppParseFeature", (DL_FUNC) &_mapboxGeojson_rcppParseFeature, 1},
     {"_mapboxGeojson_rcppParseGeometry", (DL_FUNC) &_mapboxGeojson_rcppParseGeometry, 1},
     {"_mapboxGeojson_rcppParseLineString", (DL_FUNC) &_mapboxGeojson_rcppParseLineString, 1},

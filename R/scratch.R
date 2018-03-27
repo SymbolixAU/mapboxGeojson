@@ -181,7 +181,7 @@
 # ]'
 # mapboxGeojson:::parseSomething(js)
 #
-# js <- '[{
+# js <- '{
 #   "type": "Feature",
 #   "geometry": {
 #     "type": "MultiPolygon",
@@ -200,7 +200,14 @@
 #       ]
 #     ]
 #   }
-# }
-# ]'
+# }'
 # mapboxGeojson:::parseSomething(js)
 
+
+# js <- c("{\"geodesic\":true,\"type\":\"Point\",\"coordinates\":[-118.68152563269095,36.43764870908927]}",
+#          "{\"geodesic\":true,\"type\":\"Point\",\"coordinates\":[-118.67408758213843,36.43366018922779]}",
+#          "{\"geodesic\":true,\"type\":\"Point\",\"coordinates\":[-118.67708346361097,36.44208638659282]}",
+#          "{\"geodesic\":true,\"type\":\"Point\",\"coordinates\":[-118.67886661944996,36.44110273135671]}",
+#          "{\"geodesic\":true,\"type\":\"Point\",\"coordinates\":[-118.68089232041565,36.44173155205561]}")
+#
+# mapboxGeojson:::rcpp_geojson_to_sf(js)

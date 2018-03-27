@@ -1,18 +1,3 @@
-// TODO:
-/*
- * - Encode geoJSON to polygoines
- * - convert geoJSON to sf
- * - convert sf to geoJSON
- * - read/write mongodb
- *
- * 1. convert geoJSON into geometry.hpp
- * 2. convert into R data types?
- * 3.
- *
- * Can use
- *
- */
-
 // NOTES:
 /*
  * mapboxGeojson: https://github.com/mapbox/geojson-cpp
@@ -147,18 +132,12 @@ void get_geometry_object(Rcpp::List& sfc, int i, geojson geo, std::string& g_typ
   } else if (g_type == "MultiPolygon") {
     sfc[i] = get_multi_polygon(geom.get<multi_polygon>());
 
-  //} else if (g_type == "GeometryCollection") {
-
   } else {
     Rcpp::stop("unknown sfg type");
   }
 
 }
 
-rapidjson::Value get_feature_geometry(const Value& feature) {
-  rapidjson::Value obj = feature["geometry"];
-  return obj;
-}
 
 /*
  * Parse Geometry Object
@@ -189,7 +168,6 @@ Rcpp::List parse_geometry_collection_object(const Value &val) {
   for (int i = 0; i < val.Size(); i++) {
     const Value& gcval = val[i];
     geom_type = gcval["type"].GetString();
-    //std::cout << geom_type << std::endl;
     parse_geometry_object(geom_collection, i, gcval);
   }
   geom_collection.attr("class") = sfg_attributes("GEOMETRYCOLLECTION");
@@ -197,68 +175,110 @@ Rcpp::List parse_geometry_collection_object(const Value &val) {
   return geom_collection;
 }
 
+Rcpp::List parse_feature_collection_object(const Value &feat) {
 
-// use rapidJSON to parse a JSON document
-// [[Rcpp::export]]
-Rcpp::List parseSomething(const char* js) {
-
-  rapidjson::Document d;
-  d.Parse(js);
-  Rcpp::List sfc(d.Size());
+  Rcpp::List feature_collection(feat.Size());
   std::string geom_type;
 
-  //geom_type = d["type"].GetString();
+  for (int i = 0; i < feat.Size(); i++) {
+    const Value& fcval = feat[i];
 
-  Rcpp::Rcout << "debug: size: " << d.Size() << std::endl;
-
-  // TODO: if not an array, the size will be 0 and is just an object
-  // if the GeoJSON is an array of objects, need to loop array
-  // otherwise, just parse what's there
-  for (int i = 0; i < d.Size(); i++) {
-
-    const Value& v = d[i];
-
-    //bool b = v.HasMember("type");
-    if( v.HasMember("type") == FALSE )  Rcpp::stop("No 'type' member");
-
-    // std::cout << "debug: type: " <<  v["type"].GetString() << std::endl;
-    geom_type = v["type"].GetString();
-    //Rcpp::Rcout << "debug: type: " << geom_type << std::endl;
-
-    if (geom_type == "Feature") {
-
-      // get the geometry from the feature
-      const Value& geom = v["geometry"];
-
-      // TODO: implement check geometry exists
-      //bool b = geom.HasMember("geometry");
-      parse_geometry_object(sfc, i, geom);
-
-      // TODO:
-      // get properties & save as 'sf' object
-
-    } else if (geom_type == "FeatureCollection") {
-
-      Rcpp::Rcout << "debug: FeatureCollection not implemented" << std::endl;
-
-      // If FeatureCollection, need to create an sfc object
-      // of all the features
-
-      // iterate through feature[] array
-
-    } else if (geom_type == "GeometryCollection") {
-
-      const Value& gc = v["geometries"];
-      sfc[i] = parse_geometry_collection_object(gc);
-
-    } else {  // geometry
-      parse_geometry_object(sfc, i, v);
-    }
+    // need to switch on 'type'
 
   }
 
-  return sfc;
+}
 
+void parse_geojson(rapidjson::Document& d, const Value& v, Rcpp::List& sfc, int i) {
+
+  std::string geom_type;
+
+  if( v.HasMember("type") == FALSE )  Rcpp::stop("No 'type' member - invalid GeoJSON");
+
+  geom_type = v["type"].GetString();
+
+  if (geom_type == "Feature") {
+
+    // get the geometry from the feature
+    const Value& geom = v["geometry"];
+
+    // TODO: implement check geometry exists
+    //bool b = geom.HasMember("geometry");
+    parse_geometry_object(sfc, i, geom);
+
+  } else if (geom_type == "FeatureCollection") {
+
+    // TODO:
+    // implement a check for 'feature' array
+    //const Value& feat = v["features"];
+
+    // iterate through feature[] array
+
+  } else if (geom_type == "GeometryCollection") {
+
+    const Value& gc = v["geometries"];
+    sfc[i] = parse_geometry_collection_object(gc);
+
+  } else {  // geometry
+    parse_geometry_object(sfc, i, v);
+  }
+}
+
+void parse_geojson_object(rapidjson::Document& d, Rcpp::List& sfg) {
+  const Value& v = d;
+  parse_geojson(d, v, sfg, 0);
+
+}
+
+void parse_geojson_array(rapidjson::Document& d, Rcpp::List& sfc, int i) {
+  const Value& v = d[i];
+  parse_geojson(d, v, sfc, i);
+}
+
+
+Rcpp::List geojson_to_sf(const char* js) {
+
+  rapidjson::Document d;
+  d.Parse(js);
+  Rcpp::List sfg(1);
+
+  if( d.IsObject() ) {
+
+    parse_geojson_object(d, sfg);
+    return sfg;
+
+  } else if (d.IsArray()) {
+
+    Rcpp::List sfc(d.Size());
+    for (int i = 0; i < d.Size(); i++) {
+      parse_geojson_array(d, sfc, i);
+    }
+    return sfc;
+  }
+  return sfg;
+}
+
+// Needs to accept a vector of GeoJSON
+// [[Rcpp::export]]
+Rcpp::List rcpp_geojson_to_sf(Rcpp::StringVector geojson) {
+
+  // iterate over the geojson
+  int n = geojson.size();
+  Rcpp::List lst(n);
+
+  for (int i = 0; i < n; i++ ){
+
+    // can be a vector of individual geoJSON,
+    // or a single large geoJSON object
+    //
+    // VECTOR:
+    // - each vector item wil be a row of an 'sf' / 'sfc' ?
+    // switch on type
+    //
+    lst[i] = geojson_to_sf(geojson[i]);
+  }
+
+  return lst;
 }
 
 
