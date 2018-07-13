@@ -4,9 +4,26 @@
 
 #include <RcppCommon.h>
 #include <mapbox/geometry.hpp>
+#include <mapbox/variant.hpp>
 
 // http://gallery.rcpp.org/articles/custom-templated-wrap-and-as-for-seamingless-interfaces/
 // http://gallery.rcpp.org/articles/custom-as-and-wrap-example/
+
+// TODO(define a mapbox::variant of all the mapbox types?)
+
+
+
+typedef mapbox::util::variant<
+  mapbox::geometry::point<double>,
+  mapbox::geometry::multi_point<double>,
+  mapbox::geometry::line_string<double>,
+  mapbox::geometry::multi_line_string<double>,
+  mapbox::geometry::linear_ring<double>,
+  mapbox::geometry::polygon<double>,
+  mapbox::geometry::multi_polygon<double>
+> mb_variant;
+
+
 
 namespace Rcpp {
 
@@ -18,11 +35,17 @@ namespace Rcpp {
     template <typename T> SEXP wrap(const mapbox::geometry::polygon<T>& obj);
     template <typename T> SEXP wrap(const mapbox::geometry::multi_polygon<T>& obj);
 
+    // template <typename T> SEXP wrap(const mb_variant& obj);
 }
 
 #include <Rcpp.h>
 
 namespace Rcpp {
+
+    // template <typename T>
+    // SEXP wrap(const mb_variant& obj) {
+    //
+    // }
 
     template <typename T>
     SEXP wrap(const mapbox::geometry::point<T> &obj) {

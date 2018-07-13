@@ -1,4 +1,4 @@
-#
+
 # js <- "{\"type\": \"LineString\",\"coordinates\": [[30.5, 50.5], [30.6, 50.6], [25.0, 23.3]]}"
 # mapboxGeojson:::rcppParseGeometry(js)
 
@@ -239,4 +239,36 @@
 # geojsonio 1050.364307 1050.364307 1061.61524 1061.61524 1072.86617 1072.86617     2
 #    mapbox   16.654561   16.654561   17.12597   17.12597   17.59737   17.59737     2
 #        sf    9.815147    9.815147   10.46490   10.46490   11.11466   11.11466     2
+
+
+# geo <- geojsonsf::geojson_sf(system.file("examples", "geo_melbourne.geojson", package = "geojsonsf"))
+# geo <- geojsonsf::sf_geojson(geo)
+#
+# system.time({
+#   sf <- geojsonsf::geojson_sf(geo)
+# })
+#
+# file <- system.file("examples", "geo_melbourne.geojson", package = "geojsonsf")
+# system.time({
+#   geo2 <- paste0(readLines(file), collapse = "")
+#   sf <- mapboxGeojson:::rcpp_geojson_to_sf(geo2)
+# })
+
+
+
+### sf object to MabBox object
+### Mapbox object to SF object
+
+## a mapbox object... wtf!
+
+
+
+
+
+
+
+
+
+
+
 

@@ -45,3 +45,7 @@ MultiPolygonCoordinates <- function(js) {
     .Call('_mapboxGeojson_MultiPolygonCoordinates', PACKAGE = 'mapboxGeojson', js)
 }
 
+mapbox_to_sfg <- function() {
+    .Call('_mapboxGeojson_mapbox_to_sfg', PACKAGE = 'mapboxGeojson')
+}
+

@@ -389,6 +389,8 @@ Rcpp::List template_polygon() {
   return Rcpp::wrap( pl );
 }
 
+
+
 // [[Rcpp::export]]
 Rcpp::List template_multipolygon() {
   mapbox::geometry::multi_polygon<double> mp({

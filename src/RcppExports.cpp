@@ -118,6 +118,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mapbox_to_sfg
+Rcpp::NumericVector mapbox_to_sfg();
+RcppExport SEXP _mapboxGeojson_mapbox_to_sfg() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(mapbox_to_sfg());
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_mapboxGeojson_rcpp_geojson_to_sf", (DL_FUNC) &_mapboxGeojson_rcpp_geojson_to_sf, 1},
@@ -131,6 +141,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_mapboxGeojson_template_polygon", (DL_FUNC) &_mapboxGeojson_template_polygon, 0},
     {"_mapboxGeojson_template_multipolygon", (DL_FUNC) &_mapboxGeojson_template_multipolygon, 0},
     {"_mapboxGeojson_MultiPolygonCoordinates", (DL_FUNC) &_mapboxGeojson_MultiPolygonCoordinates, 1},
+    {"_mapboxGeojson_mapbox_to_sfg", (DL_FUNC) &_mapboxGeojson_mapbox_to_sfg, 0},
     {NULL, NULL, 0}
 };
 
