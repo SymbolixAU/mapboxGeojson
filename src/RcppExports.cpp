@@ -5,143 +5,19 @@
 
 using namespace Rcpp;
 
-// rcpp_geojson_to_sf
-Rcpp::List rcpp_geojson_to_sf(Rcpp::StringVector geojson);
-RcppExport SEXP _mapboxGeojson_rcpp_geojson_to_sf(SEXP geojsonSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::StringVector >::type geojson(geojsonSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_geojson_to_sf(geojson));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcppParseFeature
-void rcppParseFeature(const char* js);
-RcppExport SEXP _mapboxGeojson_rcppParseFeature(SEXP jsSEXP) {
+// testFeature
+void testFeature(const char* geojson);
+RcppExport SEXP _mapboxGeojson_testFeature(SEXP geojsonSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
-    rcppParseFeature(js);
+    Rcpp::traits::input_parameter< const char* >::type geojson(geojsonSEXP);
+    testFeature(geojson);
     return R_NilValue;
-END_RCPP
-}
-// rcppParseGeometry
-void rcppParseGeometry(const char* js);
-RcppExport SEXP _mapboxGeojson_rcppParseGeometry(SEXP jsSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
-    rcppParseGeometry(js);
-    return R_NilValue;
-END_RCPP
-}
-// rcppParseLineString
-Rcpp::NumericMatrix rcppParseLineString(const char* js);
-RcppExport SEXP _mapboxGeojson_rcppParseLineString(SEXP jsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcppParseLineString(js));
-    return rcpp_result_gen;
-END_RCPP
-}
-// template_point
-Rcpp::NumericVector template_point();
-RcppExport SEXP _mapboxGeojson_template_point() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(template_point());
-    return rcpp_result_gen;
-END_RCPP
-}
-// template_multi_point
-Rcpp::NumericMatrix template_multi_point();
-RcppExport SEXP _mapboxGeojson_template_multi_point() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(template_multi_point());
-    return rcpp_result_gen;
-END_RCPP
-}
-// template_linestring
-Rcpp::NumericMatrix template_linestring();
-RcppExport SEXP _mapboxGeojson_template_linestring() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(template_linestring());
-    return rcpp_result_gen;
-END_RCPP
-}
-// template_multilinestring
-Rcpp::List template_multilinestring();
-RcppExport SEXP _mapboxGeojson_template_multilinestring() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(template_multilinestring());
-    return rcpp_result_gen;
-END_RCPP
-}
-// template_polygon
-Rcpp::List template_polygon();
-RcppExport SEXP _mapboxGeojson_template_polygon() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(template_polygon());
-    return rcpp_result_gen;
-END_RCPP
-}
-// template_multipolygon
-Rcpp::List template_multipolygon();
-RcppExport SEXP _mapboxGeojson_template_multipolygon() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(template_multipolygon());
-    return rcpp_result_gen;
-END_RCPP
-}
-// MultiPolygonCoordinates
-Rcpp::List MultiPolygonCoordinates(const char* js);
-RcppExport SEXP _mapboxGeojson_MultiPolygonCoordinates(SEXP jsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const char* >::type js(jsSEXP);
-    rcpp_result_gen = Rcpp::wrap(MultiPolygonCoordinates(js));
-    return rcpp_result_gen;
-END_RCPP
-}
-// mapbox_to_sfg
-Rcpp::NumericVector mapbox_to_sfg();
-RcppExport SEXP _mapboxGeojson_mapbox_to_sfg() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(mapbox_to_sfg());
-    return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_mapboxGeojson_rcpp_geojson_to_sf", (DL_FUNC) &_mapboxGeojson_rcpp_geojson_to_sf, 1},
-    {"_mapboxGeojson_rcppParseFeature", (DL_FUNC) &_mapboxGeojson_rcppParseFeature, 1},
-    {"_mapboxGeojson_rcppParseGeometry", (DL_FUNC) &_mapboxGeojson_rcppParseGeometry, 1},
-    {"_mapboxGeojson_rcppParseLineString", (DL_FUNC) &_mapboxGeojson_rcppParseLineString, 1},
-    {"_mapboxGeojson_template_point", (DL_FUNC) &_mapboxGeojson_template_point, 0},
-    {"_mapboxGeojson_template_multi_point", (DL_FUNC) &_mapboxGeojson_template_multi_point, 0},
-    {"_mapboxGeojson_template_linestring", (DL_FUNC) &_mapboxGeojson_template_linestring, 0},
-    {"_mapboxGeojson_template_multilinestring", (DL_FUNC) &_mapboxGeojson_template_multilinestring, 0},
-    {"_mapboxGeojson_template_polygon", (DL_FUNC) &_mapboxGeojson_template_polygon, 0},
-    {"_mapboxGeojson_template_multipolygon", (DL_FUNC) &_mapboxGeojson_template_multipolygon, 0},
-    {"_mapboxGeojson_MultiPolygonCoordinates", (DL_FUNC) &_mapboxGeojson_MultiPolygonCoordinates, 1},
-    {"_mapboxGeojson_mapbox_to_sfg", (DL_FUNC) &_mapboxGeojson_mapbox_to_sfg, 0},
+    {"_mapboxGeojson_testFeature", (DL_FUNC) &_mapboxGeojson_testFeature, 1},
     {NULL, NULL, 0}
 };
 

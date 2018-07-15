@@ -264,6 +264,11 @@
 
 
 
+## Mapbox geometry objects
+#
+# url <- 'https://raw.githubusercontent.com/mapbox/geojson-cpp/master/test/fixtures/feature.json'
+# js <- paste0(readLines(url), collapse = "")
+# mapboxGeojson:::testFeature(js)
 
 
 
