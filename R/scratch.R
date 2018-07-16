@@ -271,9 +271,34 @@
 # mapboxGeojson:::testFeature(js)
 
 
-
-
-
-
-
+# fc <- '
+# {
+#   "type": "FeatureCollection",
+#   "features": [
+#     {
+#       "type": "Feature",
+#       "properties": null,
+#       "geometry": {
+#         "type": "Point",
+#         "coordinates": [100.0, 0.0]
+#       }
+#     },
+#     {
+#       "type": "Feature",
+#       "properties": null,
+#       "geometry": {
+#         "type": "LineString",
+#         "coordinates": [
+#           [101.0, 0.0],
+#           [102.0, 1.0]
+#         ]
+#       }
+#     }
+#   ]
+# }'
+#
+# jsonlite::validate(fc)
+# geojsonsf::geojson_sf(fc)
+#
+# mapboxGeojson:::testFeature(fc)
 

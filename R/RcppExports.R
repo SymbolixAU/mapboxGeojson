@@ -5,3 +5,7 @@ testFeature <- function(geojson) {
     invisible(.Call('_mapboxGeojson_testFeature', PACKAGE = 'mapboxGeojson', geojson))
 }
 
+testFeatureCollection <- function(geojson) {
+    invisible(.Call('_mapboxGeojson_testFeatureCollection', PACKAGE = 'mapboxGeojson', geojson))
+}
+

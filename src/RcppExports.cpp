@@ -15,9 +15,20 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// testFeatureCollection
+void testFeatureCollection(const char* geojson);
+RcppExport SEXP _mapboxGeojson_testFeatureCollection(SEXP geojsonSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type geojson(geojsonSEXP);
+    testFeatureCollection(geojson);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_mapboxGeojson_testFeature", (DL_FUNC) &_mapboxGeojson_testFeature, 1},
+    {"_mapboxGeojson_testFeatureCollection", (DL_FUNC) &_mapboxGeojson_testFeatureCollection, 1},
     {NULL, NULL, 0}
 };
 
