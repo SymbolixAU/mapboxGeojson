@@ -223,6 +223,15 @@ std::ostream& operator<<(std::ostream& os, const mapbox::geometry::feature<T>& f
   return os;
 }
 
+template <class T>
+std::ostream& operator<<(std::ostream& os, const mapbox::geometry::feature_collection<T>& feature_collection) {
+  os << "FeatureCollection" << std::endl;
+  for (const auto& feature : feature_collection) {
+    os << feature;
+  }
+  return os;
+}
+
 
 // [[Rcpp::export]]
 void testFeature(const char* geojson) {
@@ -236,7 +245,7 @@ void testFeature(const char* geojson) {
 void testFeatureCollection(const char* geojson) {
   const auto &data = readGeoJSON(geojson);
   const auto &f = data.get<feature_collection>();
-
+  std::cout << f << std::endl;
 }
 
 

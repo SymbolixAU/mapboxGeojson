@@ -271,13 +271,35 @@
 # mapboxGeojson:::testFeature(js)
 
 
+# js <- '{
+#   "type": "Feature",
+#   "geometry": {
+#     "type": "MultiPolygon",
+#     "coordinates": [
+#       [
+#         [
+#           [180.0, 40.0], [180.0, 50.0], [170.0, 50.0],
+#           [170.0, 40.0], [180.0, 40.0]
+#         ]
+#       ],
+#       [
+#         [
+#           [-170.0, 40.0], [-170.0, 50.0], [-180.0, 50.0],
+#           [-180.0, 40.0], [-170.0, 40.0]
+#         ]
+#       ]
+#     ]
+#   }
+# }'
+# mapboxGeojson:::testFeature(js)
+
 # fc <- '
 # {
 #   "type": "FeatureCollection",
 #   "features": [
 #     {
 #       "type": "Feature",
-#       "properties": null,
+#       "properties": {"id":1,"foo":"bar"},
 #       "geometry": {
 #         "type": "Point",
 #         "coordinates": [100.0, 0.0]
@@ -293,6 +315,18 @@
 #           [102.0, 1.0]
 #         ]
 #       }
+#     },
+#     {
+#       "type" : "Feature",
+#       "properties" : {"foo":"baz"},
+#       "geometry" : {
+#         "type" : "GeometryCollection",
+#         "geometries": [
+#           {"type": "Point", "coordinates": [100.0, 0.0]},
+#           {"type": "LineString", "coordinates": [[101.0, 0.0], [102.0, 1.0]]},
+#           {"type" : "MultiPoint", "coordinates" : [[0,0], [1,1], [2,2]]}
+#         ]
+#       }
 #     }
 #   ]
 # }'
@@ -300,5 +334,5 @@
 # jsonlite::validate(fc)
 # geojsonsf::geojson_sf(fc)
 #
-# mapboxGeojson:::testFeature(fc)
+# mapboxGeojson:::testFeatureCollection(fc)
 
