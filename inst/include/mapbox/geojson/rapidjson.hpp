@@ -3,7 +3,6 @@
 #include <rapidjson/document.h>
 #include <mapbox/geojson.hpp>
 
-
 namespace mapbox {
 namespace geojson {
 
